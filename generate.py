@@ -104,7 +104,6 @@ class CrosswordCreator():
                 if len(word) != variable.length:
                     self.domains[variable].remove(word)
 
-        raise NotImplementedError
 
     def revise(self, x, y):
         """
