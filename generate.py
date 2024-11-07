@@ -153,14 +153,27 @@ class CrosswordCreator():
         Return True if `assignment` is complete (i.e., assigns a value to each
         crossword variable); return False otherwise.
         """
-        raise NotImplementedError
+        for var in self.crossword.variables:
+            if var not in assignment:
+                return False
+        return True
 
     def consistent(self, assignment):
         """
         Return True if `assignment` is consistent (i.e., words fit in crossword
         puzzle without conflicting characters); return False otherwise.
         """
-        raise NotImplementedError
+        counter = 0
+        for word1 in assignment.values():
+            for word2 in assignment.values():
+                if word1 == word2:
+                    counter+=1
+            for var in self.crossword.variables():
+                if len(word1) != var.length:
+                    return False
+        if counter > len(assignment.values()):
+            return False
+
 
     def order_domain_values(self, var, assignment):
         """
