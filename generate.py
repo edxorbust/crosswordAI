@@ -1,5 +1,5 @@
 import sys
-
+import copy
 from crossword import *
 
 
