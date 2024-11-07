@@ -1,5 +1,5 @@
 import sys
-
+import copy
 from crossword import *
 
 
@@ -133,6 +133,16 @@ class CrosswordCreator():
         Return True if arc consistency is enforced and no domains are empty;
         return False if one or more domains end up empty.
         """
+
+        if arcs == None:
+            arcs = list(self.crossword.overlaps.keys())
+            while len(arcs) != 0:
+                x, y = arcs.pop(0)
+                if self.revise(x, y):
+                    self.crossword.neighbors(x)
+
+
+
         raise NotImplementedError
 
     def assignment_complete(self, assignment):
