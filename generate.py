@@ -163,16 +163,19 @@ class CrosswordCreator():
         Return True if `assignment` is consistent (i.e., words fit in crossword
         puzzle without conflicting characters); return False otherwise.
         """
-        counter = 0
-        for word1 in assignment.values():
-            for word2 in assignment.values():
-                if word1 == word2:
-                    counter+=1
-            for var in self.crossword.variables():
-                if len(word1) != var.length:
+        showed_words = set()
+        for var, word in assignment.items():
+            if word in showed_words:
+                return False
+            showed_words.add(word)
+            if var.length != len(word):
+                return False
+        
+        for (x,y) , (i,j) in self.crossword.overlaps.items():
+            if x in assignment and y in assignment:
+                if assignment[x][i] != assignment[y][j]:
                     return False
-        if counter > len(assignment.values()):
-            return False
+        return True
 
 
     def order_domain_values(self, var, assignment):
@@ -182,6 +185,7 @@ class CrosswordCreator():
         The first value in the list, for example, should be the one
         that rules out the fewest values among the neighbors of `var`.
         """
+        
         raise NotImplementedError
 
     def select_unassigned_variable(self, assignment):
