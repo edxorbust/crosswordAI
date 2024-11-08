@@ -186,7 +186,13 @@ class CrosswordCreator():
         that rules out the fewest values among the neighbors of `var`.
         """
         
-        raise NotImplementedError
+        for neighbor in self.crossword.neighbors(var):
+            if neighbor not in assignment:
+                for value in self.domains[var]:
+                    continue
+
+
+        
 
     def select_unassigned_variable(self, assignment):
         """
