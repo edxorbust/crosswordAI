@@ -185,11 +185,17 @@ class CrosswordCreator():
         The first value in the list, for example, should be the one
         that rules out the fewest values among the neighbors of `var`.
         """
-        
+        heuristic_dict = dict()
         for neighbor in self.crossword.neighbors(var):
             if neighbor not in assignment:
                 for value in self.domains[var]:
-                    continue
+                    for word in self.domains[neighbor]:
+                        if value[self.crossword.overlaps[var,neighbor][0]] == word[self.crossword.overlaps[var,neighbor][1]]:
+                            if value not in heuristic_dict:
+                                heuristic_dict[value] = 0
+                            heuristic_dict[value] += 1
+        return sorted(heuristic_dict.keys(), key=lambda x: heuristic_dict[x])
+                    
 
 
         
