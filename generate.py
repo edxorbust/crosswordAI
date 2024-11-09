@@ -190,7 +190,8 @@ class CrosswordCreator():
             if neighbor not in assignment:
                 for value in self.domains[var]:
                     for word in self.domains[neighbor]:
-                        if value[self.crossword.overlaps[var,neighbor][0]] == word[self.crossword.overlaps[var,neighbor][1]]:
+                        i, j = self.crossword.overlaps[var,neighbor]
+                        if value[i] == word[j]:
                             if value not in heuristic_dict:
                                 heuristic_dict[value] = 0
                             heuristic_dict[value] += 1
