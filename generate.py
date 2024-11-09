@@ -198,8 +198,20 @@ class CrosswordCreator():
         return sorted(heuristic_dict.keys(), key=lambda x: heuristic_dict[x])
                     
 
-
+    def min_domains_var(heuristic_dict):
         
+        var_with_fewest_value = min([x[0] for x in heuristic_dict.values()])
+        tied_vars = dict()
+        for x in heuristic_dict.keys():
+            if heuristic_dict[x][0] == var_with_fewest_value:
+                tied_vars[x] = heuristic_dict[x]
+        return tied_vars
+
+    def highest_degree_var(tied_vars):
+        highest_degree_value = max([x[1] for x in tied_vars.values()])
+        for var in tied_vars.keys():
+            if highest_degree_value == tied_vars[var][1]:
+                return var
 
     def select_unassigned_variable(self, assignment):
         """
@@ -209,7 +221,20 @@ class CrosswordCreator():
         degree. If there is a tie, any of the tied variables are acceptable
         return values.
         """
-        raise NotImplementedError
+        heuristic_dict = dict()
+        for var in self.crossword.variables:
+            if var not in assignment:
+                heuristic_dict[var] = (len(self.domains[var]), len(self.crossword.neighbors(var)))
+        
+        tied_vars = self.min_domains_var(heuristic_dict)
+        if len(tied_vars) == 1:
+            return next(iter(tied_vars.keys()))
+        
+        return self.highest_degree_var(tied_vars)
+
+
+
+        
 
     def backtrack(self, assignment):
         """
