@@ -1,4 +1,5 @@
 import sys
+import copy
 from crossword import *
 
 
@@ -98,8 +99,9 @@ class CrosswordCreator():
         (Remove any values that are inconsistent with a variable's unary
          constraints; in this case, the length of the word.)
         """
+        copy_domains = copy.deepcopy(self.domains)
         for variable in self.crossword.variables:
-            for word in self.domains[variable]:
+            for word in copy_domains[variable]:
                 if len(word) != variable.length:
                     self.domains[variable].remove(word)
 
@@ -116,11 +118,18 @@ class CrosswordCreator():
         was_revised = False
         if self.crossword.overlaps[x,y] != None:
             i,j = self.crossword.overlaps[x,y]
-            for wordX in self.domains[x]:
+            domains_copy = copy.deepcopy(self.domains)
+            for wordX in domains_copy[x]:
+                found = False
                 for wordY in self.domains[y]:
+                    if wordX == wordY:
+                        continue
                     if wordX[i] != wordY[j]:
-                        self.domains[x].remove(wordX)
-                        was_revised = True
+                        found = True
+                        break
+                if found and wordX in self.domains[x]:
+                    self.domains[x].remove(wordX)
+                    was_revised = True
         return was_revised
 
     def ac3(self, arcs=None):
@@ -197,7 +206,7 @@ class CrosswordCreator():
         return sorted(heuristic_dict.keys(), key=lambda x: heuristic_dict[x])
                     
 
-    def min_domains_var(heuristic_dict):
+    def min_domains_var(self, heuristic_dict):
         
         var_with_fewest_value = min([x[0] for x in heuristic_dict.values()])
         tied_vars = dict()
@@ -206,7 +215,7 @@ class CrosswordCreator():
                 tied_vars[x] = heuristic_dict[x]
         return tied_vars
 
-    def highest_degree_var(tied_vars):
+    def highest_degree_var(self, tied_vars):
         highest_degree_value = max([x[1] for x in tied_vars.values()])
         for var in tied_vars.keys():
             if highest_degree_value == tied_vars[var][1]:
