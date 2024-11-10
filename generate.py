@@ -250,7 +250,7 @@ class CrosswordCreator():
 
         var = self.select_unassigned_variable(assignment)
         for value in self.domains[var]:
-            new_assignment = copy.deepcopy(assignment)
+            new_assignment = copy.copy(assignment)
             new_assignment[var] = value
             if self.consistent(new_assignment):
                 result = self.backtrack(new_assignment)
