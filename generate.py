@@ -247,18 +247,16 @@ class CrosswordCreator():
         """
         if self.assignment_complete(assignment):
             return assignment
-        
-        trial_assignment = copy.deepcopy(assignment)
 
         var = self.select_unassigned_variable(assignment)
         for value in self.domains[var]:
-            trial_assignment[var] = value
-            if self.consistent(trial_assignment):
-                assignment[var] = value
-                result = self.backtrack(assignment)
+            new_assignment = copy.deepcopy(assignment)
+            new_assignment[var] = value
+            if self.consistent(new_assignment):
+                result = self.backtrack(new_assignment)
                 if result != None:
                     return result
-            del trial_assignment[var]
+            del new_assignment[var]
         return None
             
 
