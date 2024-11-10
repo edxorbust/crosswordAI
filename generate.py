@@ -253,9 +253,14 @@ class CrosswordCreator():
         var = self.select_unassigned_variable(assignment)
         for value in self.domains[var]:
             trial_assignment[var] = value
-            self.consistent(trial_assignment)
-        
-        raise NotImplementedError
+            if self.consistent(trial_assignment):
+                assignment[var] = value
+                result = self.backtrack(assignment)
+                if result != None:
+                    return result
+            del trial_assignment[var]
+        return None
+            
 
 
 def main():
